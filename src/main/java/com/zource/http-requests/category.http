@@ -1,0 +1,11 @@
+GET http://{{host}}:{{port}}/api/login
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/category/11
+
+###
+GET http://localhost:8080/api/category/1/childCategories
+
+###

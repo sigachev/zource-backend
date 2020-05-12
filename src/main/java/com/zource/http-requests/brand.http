@@ -1,0 +1,17 @@
+### Basic authorization.
+
+GET http://{{host}}:{{port}}/api/login
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/brand/1
+
+
+###
+
+GET http://localhost:8080/api/brand/all
+Content-Type: application/json
+
+
+###
