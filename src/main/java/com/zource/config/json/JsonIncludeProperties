@@ -1,0 +1,5 @@
+package com.zource.config.json;
+
+public @interface JsonIncludeProperties {
+    String[] values() default "";
+}

@@ -1,11 +1,10 @@
 package com.zource.service.product;
 
-import com.zource.exceptions.ProductNotFoundException;
+import com.zource.exceptions.product.ProductNotFoundException;
 import com.zource.model.Product;
 import com.zource.model.ProductImage;
-import com.zource.repository.ProductRepository;
+import com.zource.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,22 +61,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Secured("ROLE_ADMIN")
-    public Product updateProduct(Product product) {
+    public Product updateProduct(Product product) throws ProductNotFoundException {
         Optional< Product > p = this.productRepository.findById(product.getId());
-
         if (p.isPresent()) {
             Product productUpdate = p.get();
-            productUpdate.setId(product.getId());
+           /* productUpdate.setId(product.getId());
             productUpdate.setName(product.getName());
             productUpdate.setSku(product.getSku());
             productUpdate.setDescription(product.getDescription());
             productUpdate.setPrice(product.getPrice());
             productUpdate.setEnabled(product.isEnabled());
             productUpdate.setBrand(product.getBrand());
-            productRepository.save(productUpdate);
-            return productUpdate;
+            productRepository.save(productUpdate);*/
+            productRepository.save(product);
+            return product;
         } else {
-            throw new ResourceNotFoundException("Record not found with id : " + product.getId());
+            throw new ProductNotFoundException("Product not found with id : " + product.getId());
         }
     }
 

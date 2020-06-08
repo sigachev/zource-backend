@@ -1,6 +1,6 @@
 package com.zource.service.product;
 
-import com.zource.exceptions.ProductNotFoundException;
+import com.zource.exceptions.product.ProductNotFoundException;
 import com.zource.model.Product;
 import com.zource.model.ProductImage;
 import org.springframework.security.access.annotation.Secured;
@@ -20,6 +20,6 @@ public interface ProductService {
     List<Product> findAllProducts();
     List<Product> findAll(Long categoryId, Long brandId, String name);
 
-    Product updateProduct(Product product);
+    Product updateProduct(Product product) throws ProductNotFoundException;
     void deleteProduct(Long id);
 }

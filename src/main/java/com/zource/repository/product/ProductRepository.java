@@ -1,4 +1,4 @@
-package com.zource.repository;
+package com.zource.repository.product;
 
 import com.zource.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

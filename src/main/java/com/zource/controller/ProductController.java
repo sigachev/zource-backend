@@ -1,22 +1,16 @@
 package com.zource.controller;
 
 import com.zource.DTO.*;
-import com.zource.exceptions.ProductNotFoundException;
-import com.zource.model.ImageModel;
+import com.zource.exceptions.product.ProductImageNotFoundException;
+import com.zource.exceptions.product.ProductNotFoundException;
 import com.zource.model.Product;
 import com.zource.model.ProductImage;
-import com.zource.repository.ProductImageRepository;
 import com.zource.service.product.ProductDTOService;
 import com.zource.service.product.ProductService;
 import com.zource.service.product.images.ProductImageService;
-import com.zource.service.storage.AmazonS3BucketService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.tomcat.jni.Time;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -30,13 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {
 
     @Autowired
     private Environment environment;
-
 
     @Autowired
     private ProductService productService;
@@ -45,16 +39,7 @@ public class ProductController {
     private ProductImageService productImageService;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private ProductImageRepository productImageRepository;
-
-    @Autowired
     private ProductDTOService productDTOService;
-
-    @Autowired
-    private AmazonS3BucketService amazonS3BucketService;
 
     @Value("${api.url}")
     private String apiUrl;
@@ -90,7 +75,7 @@ public class ProductController {
 
 
     @PutMapping("/api/product/update")
-    public ResponseEntity<Product> updateProduct(@DTO(ProductDTO.class) Product product) {
+    public ResponseEntity<Product> updateProduct(@DTO(ProductDTO.class) Product product) throws ProductNotFoundException {
         return ResponseEntity.ok().body(this.productService.updateProduct(product));
     }
 
@@ -125,7 +110,6 @@ public class ProductController {
                                        @PathVariable final Long id) throws ProductNotFoundException {
 
 
-
         System.out.println("START DATA");
         for (ProductImageUpdateDTO p : data) {
             System.out.println(p.getId());
@@ -141,59 +125,38 @@ public class ProductController {
         System.out.println("FINISH FILES");
 
 
+        Product product = productService.getById(id);
 
-        Set<ProductImage> existingSet = new HashSet();
+        Set<ProductImage> existingSet = product.getProductImages();
         Set<ProductImage> newSet = new HashSet();
 
-        if (data.isEmpty())
-            return new ResponseEntity(null, HttpStatus.OK);
-
-        Product product = this.productService.getById(id);
-
-        existingSet = product.getProductImages();
-        data.stream().forEach(d -> {
-            newSet.add(productImageService.convertToEntity(d));
-        });
-
-
-
-        for (MultipartFile f: files) {
-            ImageModel img = new ImageModel();
-            final String ext = FilenameUtils.getExtension(f.getOriginalFilename());
-            final String name = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(10), ext);
-            img.setFileName("products/" + name);
-
-            ProductImage pi = new ProductImage();
-            pi.setImage(img);
-            pi.setProduct(product);
-
-            this.productImageRepository.save(pi);
-
-            System.out.println("Before S3 filename: " + f.getOriginalFilename());
-            System.out.println("Before S3 img: " + img.getFileName());
-
-            amazonS3BucketService.uploadFile(f, img.getFileName());
-
+        //update product images
+        if (!data.isEmpty()) {
+            data.stream().forEach(d -> {
+                newSet.add(productImageService.convertToEntity(d));
+            });
+            newSet.forEach(s -> {
+                try {
+                    productImageService.update(s);
+                } catch (ProductImageNotFoundException e) {
+                    new ProductImageNotFoundException(e.getMessage());
+                }
+            });
         }
 
 
+        // check for deletes - if any
+        // deleteSet contains only elements that do not exist in newSet
+        Set<ProductImage> deleteSet = existingSet.stream().filter(s1 -> newSet.stream().noneMatch(s2 -> s1.getId().equals(s2.getId()))).collect(Collectors.toSet());
+        deleteSet.forEach(s -> productImageService.delete(s));
 
-/*
-        for (ProductImageUpdateDTO productImageDTO : data.getProductImageUpdateDTOList()) {
-            try {
-                ProductImage productImage = this.productImageService.getById(productImageDTO.getId());
-                productImage.setImageOrder(productImageDTO.getOrder());
-                this.productImageRepository.save(productImage);
-            } catch (ProductImageNotFoundException e) {
-                e.printStackTrace();
-            }
-
-
-
+        //set of added files with
+        Set<ProductImage> fileSet = newSet.stream().filter(s -> s.getId() == 0).collect(Collectors.toSet());
+        System.out.println("fileSet size: " + fileSet.size());
+        for (MultipartFile f : files) {
+            this.productImageService.addImage(f, product);
         }
-*/
 
-        ProductImageUpdateDTOList result = new ProductImageUpdateDTOList();
         return new ResponseEntity(data, HttpStatus.OK);
 
     }

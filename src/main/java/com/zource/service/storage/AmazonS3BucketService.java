@@ -69,4 +69,8 @@ public class AmazonS3BucketService {
         return "Deletion Successful";
     }
 
+    public boolean doesObjectExist(String fileName) {
+        return amazonS3.doesObjectExist(bucketName, fileName);
+    }
+
 }

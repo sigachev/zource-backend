@@ -4,6 +4,7 @@ import com.zource.model.ProductImage;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Array;
 
 @Data
 public class ProductImageDTO {

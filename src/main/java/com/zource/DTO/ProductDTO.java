@@ -18,7 +18,6 @@ import java.util.List;
 
 @Getter
 @Setter
-
 public class ProductDTO {
 
     @Id
@@ -54,7 +53,6 @@ public class ProductDTO {
             resolver = EntityIdResolver.class,
             scope = Brand.class)
     @JsonIdentityReference(alwaysAsId = true)
-
     private Brand brand;
 
     private List<ProductImageDTO> images = new ArrayList<>();

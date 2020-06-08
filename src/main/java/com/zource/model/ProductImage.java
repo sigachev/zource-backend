@@ -22,11 +22,12 @@ public class ProductImage {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id")
+    @ManyToOne(fetch = FetchType.LAZY,  cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+    @JoinColumn(name = "image_id", nullable = true)
     private ImageModel image;
 
     @Column(name = "image_order")
     private short imageOrder;
-}
 
+
+}

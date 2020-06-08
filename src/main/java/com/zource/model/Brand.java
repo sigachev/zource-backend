@@ -17,7 +17,6 @@ import java.util.Set;
 @Setter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "products"})
 
-
 @Table(name = "brand")
 public class Brand {
 

@@ -27,8 +27,8 @@ public class ImageModel {
     @Column(name = "type")
     private String type;
 
-
-    @OneToMany(mappedBy="image", orphanRemoval = true)
+// With CascadeType.ALL child entity is managed by parent. You need to detach it before remove.
+    @OneToMany(mappedBy="image", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ProductImage> productImages;
 
 

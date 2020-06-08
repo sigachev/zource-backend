@@ -3,7 +3,7 @@ package com.zource.service.product;
 import com.zource.DTO.ProductImageDTO;
 import com.zource.model.Product;
 import com.zource.model.ProductImage;
-import com.zource.repository.ProductRepository;
+import com.zource.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
