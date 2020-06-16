@@ -4,6 +4,7 @@ import com.zource.exceptions.product.ProductNotFoundException;
 import com.zource.model.Product;
 import com.zource.model.ProductImage;
 import com.zource.repository.product.ProductRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -64,16 +65,18 @@ public class ProductServiceImpl implements ProductService {
     public Product updateProduct(Product product) throws ProductNotFoundException {
         Optional< Product > p = this.productRepository.findById(product.getId());
         if (p.isPresent()) {
-            Product productUpdate = p.get();
-           /* productUpdate.setId(product.getId());
+            /*Product productUpdate = p.get();
+            productUpdate.setId(product.getId());
             productUpdate.setName(product.getName());
             productUpdate.setSku(product.getSku());
             productUpdate.setDescription(product.getDescription());
             productUpdate.setPrice(product.getPrice());
             productUpdate.setEnabled(product.isEnabled());
             productUpdate.setBrand(product.getBrand());
-            productRepository.save(productUpdate);*/
+            Hibernate.initialize(productUpdate.getProductImages());
+            System.out.println("Size: " + productUpdate.getProductImages().size());*/
             productRepository.save(product);
+
             return product;
         } else {
             throw new ProductNotFoundException("Product not found with id : " + product.getId());

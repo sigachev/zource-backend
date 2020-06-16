@@ -83,11 +83,18 @@ public class Product {
     private Set<Category> categories = new HashSet<>();
 
 
+
+
     @OneToMany(mappedBy="product", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ProductImage> productImages = new HashSet<>();
 
 
+    //this setter is necessary for orphanRemoval = true
+    public void setProductImages(Set<ProductImage> productImages) {
+        this.productImages.clear();
+        this.productImages.addAll(productImages);
+    }
 
     public Product() {
     }
