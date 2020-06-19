@@ -1,19 +1,18 @@
-
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /home/ec2-user
+  - source: ./install.txt
+    destination: /tmp/CodeDeployExample
 hooks:
+  BeforeInstall:
+    - location: ./scripts/before-install.sh
+      timeout: 900
   AfterInstall:
-    - location: fix_previleges.sh
-      timeout: 300
-      runas: root
+    - location: ./scripts/after-install.sh
+      timeout: 900
   ApplicationStart:
-    - location: start_server.sh
-      timeout: 300
-      runas: root
-  ApplicationStop:
-    - location: stop_server.sh
-      timeout: 300
-      runas: root
+    - location: ./scripts/application-start.sh
+      timeout: 900
+  ValidateService:
+    - location: ./scripts/validate-service.sh
+      timeout: 900
