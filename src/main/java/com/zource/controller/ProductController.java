@@ -91,7 +91,7 @@ public class ProductController {
     }
 
 /*
-    @PostMapping("/api/product/{id}/uploadImages")
+    @PostM apping("/api/product/{id}/uploadImages")
     public ResponseEntity uploadFile(@RequestPart(value = "file") MultipartFile file) {
 
 
