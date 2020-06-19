@@ -8,13 +8,13 @@ hooks:
     - location: ./scripts/before-install.sh
       timeout: 900
       runas: root
-    - location: fix_previleges.sh
+    - location: fix-previleges.sh
       timeout: 300
       runas: root
   AfterInstall:
     - location: ./scripts/after-install.sh
       timeout: 900
-    - location: fix_previleges.sh
+    - location: fix-previleges.sh
       timeout: 300
       runas: root
   ApplicationStart:
