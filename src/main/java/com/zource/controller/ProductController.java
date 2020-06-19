@@ -11,6 +11,7 @@ import com.zource.service.product.images.ProductImageService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -40,6 +41,10 @@ public class ProductController {
 
     @Autowired
     private ProductDTOService productDTOService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     @Value("${api.url}")
     private String apiUrl;
@@ -77,6 +82,12 @@ public class ProductController {
     @PutMapping("/api/product/update")
     public ResponseEntity<Product> updateProduct(@DTO(ProductDTO.class) Product product) throws ProductNotFoundException {
         return ResponseEntity.ok().body(this.productService.updateProduct(product));
+    }
+
+    @PostMapping("/api/product/new")
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
+        return new ResponseEntity(this.productService.saveProduct(product), HttpStatus.OK);
     }
 
 /*

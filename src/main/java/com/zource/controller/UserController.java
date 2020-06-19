@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
+@RequestMapping("/api/")
 public class UserController {
 
     @Autowired
@@ -22,7 +23,7 @@ public class UserController {
     private UserService userService;
 
 
-    @PostMapping("/api/registration")
+    @PostMapping("registration")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userService.findByUsername(user.getUsername()) != null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -31,7 +32,7 @@ public class UserController {
         return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/user/update")
+    @PostMapping("user/update")
     public ResponseEntity<?> update(@RequestBody User user) {
         if (userService.findById(user.getId()) == null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -51,7 +52,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }*/
 
-    @GetMapping("/api/login")
+    @GetMapping("login")
     public ResponseEntity<?> authenticate(Principal principal) {
         if (principal == null) {
             //This should be ok http status because this will be used for logout path.
@@ -63,13 +64,23 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/api/users/all")
+    @GetMapping("users/all")
     public ResponseEntity<?> allUsers() {
         return new ResponseEntity(userService.findAllUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/api/checkusername/{username}")
+    @GetMapping("user/check/username/{username}")
     public ResponseEntity<?> checkIfUsernameExists(@PathVariable String username) {
         return new ResponseEntity(userService.findByUsername(username) == null ? false : true, HttpStatus.OK);
     }
+
+    /*    @GetMapping("/api/user/check/email/{email}")
+        public ResponseEntity<?> checkIfEmailExists(@PathVariable String email) {
+            return new ResponseEntity(userService.findByEmail(email) == null ? false : true, HttpStatus.OK);
+        }*/
+    @PutMapping("user/check/email")
+    public ResponseEntity<?> checkIfEmailExists(@RequestBody String email) {
+        return new ResponseEntity(userService.findByEmail(email) == null ? false : true, HttpStatus.OK);
+    }
+
 }

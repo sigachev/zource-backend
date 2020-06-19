@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.zource.model.jsonViews.ProductView;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -41,9 +42,9 @@ public class Product {
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="priceFor")
+    @Column(name = "priceFor", columnDefinition = "varchar(50) default 'each'")
     @JsonView(ProductView.Short.class)
-    private UnitOfMeasure priceFor;
+    private UnitOfMeasure priceFor = UnitOfMeasure.each;
 
     @Enumerated(EnumType.STRING)
     @Column(name="soldBy")
@@ -61,7 +62,7 @@ public class Product {
 
     @Column(name = "enabled")
     @JsonView(ProductView.Short.class)
-    private boolean enabled;
+    private boolean enabled = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
