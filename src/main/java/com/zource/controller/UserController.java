@@ -39,19 +39,6 @@ public class UserController {
         } else return new ResponseEntity<>(userService.saveUser(user), HttpStatus.OK);
     }
 
-
-/*    @GetMapping("/api/login")
-    public ResponseEntity<?> login(Principal principal) {
-        if (principal == null) {
-            //This should be ok http status because this will be used for logout path.
-            return ResponseEntity.ok(principal);
-        }
-        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
-        User user = userService.findByUsername(authenticationToken.getName());
-        user.setToken(jwtTokenProvider.generateToken(authenticationToken));
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }*/
-
     @GetMapping("login")
     public ResponseEntity<?> authenticate(Principal principal) {
         if (principal == null) {
