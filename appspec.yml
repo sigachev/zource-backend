@@ -3,26 +3,16 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user
-    permissions:
-      - object: /home/ec2-user
-        pattern: "**"
-        owner: ec2-user
-        group: ec2-user
-        mode: 755
-        type:
-          - file
 hooks:
-  BeforeInstall:
-    - location: ./scripts/before-install.sh
-      timeout: 900
   AfterInstall:
-    - location: ./scripts/after-install.sh
-      timeout: 900
-    - location: fix-previleges.sh
+    - location: ./scripts/fix_previleges.sh
       timeout: 300
+      runas: root
   ApplicationStart:
-    - location: ./scripts/application-start.sh
-      timeout: 900
-  ValidateService:
-    - location: ./scripts/validate-service.sh
-      timeout: 900
+    - location: ./scripts/start_server.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: ./scripts/stop_server.sh
+      timeout: 300
+      runas: root
