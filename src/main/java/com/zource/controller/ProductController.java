@@ -92,7 +92,7 @@ public class ProductController {
 
 /*
     @PostMapping("/api/product/{id}/uploadImages")
-    public  ResponseEntity  uploadFile(@RequestPart(value = "file") MultipartFile file) {
+    public  ResponseEntity uploadFile(@RequestPart(value = "file") MultipartFile file) {
 
 
         return new  ResponseEntit5y(this.amazonS3BucketService.uploadFile(file), HttpStatus.OK);
