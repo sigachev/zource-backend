@@ -7,18 +7,14 @@ hooks:
   BeforeInstall:
     - location: ./scripts/before-install.sh
       timeout: 900
-      runas: root
   AfterInstall:
     - location: ./scripts/after-install.sh
       timeout: 900
     - location: fix-previleges.sh
       timeout: 300
-      runas: root
   ApplicationStart:
     - location: ./scripts/application-start.sh
       timeout: 900
-      runas: root
   ValidateService:
     - location: ./scripts/validate-service.sh
       timeout: 900
-      runas: root
